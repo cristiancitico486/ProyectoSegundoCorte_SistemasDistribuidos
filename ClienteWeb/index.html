@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Cliente Audio gRPC-Web</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; max-width: 980px; }
+        h1 { margin-bottom: 4px; }
+        section { border: 1px solid #ccc; border-radius: 6px; padding: 10px 14px; margin-top: 14px; }
+        h2 { margin: 0 0 8px; font-size: 1.05em; }
+        button { margin: 2px 4px 2px 0; padding: 4px 10px; cursor: pointer; }
+        button.activo { background: #2a6fdb; color: #fff; border-color: #2a6fdb; }
+        button:disabled { cursor: not-allowed; opacity: .5; }
+        ul.lista { list-style: none; padding: 0; margin: 6px 0; }
+        ul.lista li { padding: 3px 0; }
+        ul.lista a { cursor: pointer; color: #2a6fdb; text-decoration: underline; }
+        table { border-collapse: collapse; margin-top: 6px; }
+        td, th { border: 1px solid #ddd; padding: 3px 8px; text-align: left; }
+        .log { border: 1px solid #ccc; padding: 10px; height: 150px; overflow-y: scroll; margin-top: 6px; font-family: monospace; font-size: 13px; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: #555; }
+        .muted { color: #777; font-size: .9em; }
+        .reaccion-btn { font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <h1>Transmisión de Audio con gRPC-Web</h1>
+    <p>La conexión se intentará al servidor ubicado en localhost:8080</p>
+    <p class="muted">Usuario: <strong id="usuario-id"></strong> · Canal de reacciones: <span id="estado-ws">conectando…</span></p>
+
+    <section id="catalogo">
+        <h2>1. Catálogo</h2>
+        <div>Tipo de audio: <span id="tipos"></span></div>
+        <ul id="audios" class="lista"></ul>
+        <div id="detalle"></div>
+        <div id="estado-catalogo" class="muted"></div>
+    </section>
+
+    <section id="reproductor">
+        <h2>2. Reproductor</h2>
+        <audio id="audio-player" controls style="display:none"></audio>
+        <h3 id="status">Esperando petición...</h3>
+        <div>Reacciones: <span id="botones-reaccion"></span></div>
+        <div id="reacciones" class="log" style="height:90px"></div>
+    </section>
+
+    <section id="historial">
+        <h2>3. Mi historial</h2>
+        <button id="btn-historial">Ver mis audios reproducidos</button>
+        <div id="tabla-historial"></div>
+    </section>
+
+    <section id="suscripcion">
+        <h2>4. Suscripción y pago</h2>
+        <div id="panel-suscripciones" class="muted">Cargando módulo de suscripciones…</div>
+    </section>
+
+    <section>
+        <h2>Ecos</h2>
+        <div id="log" class="log"></div>
+    </section>
+
+    <script>
+        // Configuración. Se puede cambiar con parámetros de la URL, p. ej.
+        // index.html?api=http://localhost:9000/api&ws=ws://localhost:9000/ws/reacciones
+        (function () {
+            var q = new URLSearchParams(location.search);
+            window.CONFIG = {
+                envoy: q.get('envoy') || 'http://localhost:8080',
+                api: (q.get('api') || 'http://localhost:9000/api').replace(/\/$/, ''),
+                ws: q.get('ws') || 'ws://localhost:9000/ws/reacciones'
+            };
+        })();
+    </script>
+    <script src="./bundle.js"></script>
+    <script src="./suscripciones.js"></script>
+    <script src="./funciones.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package servicios;
+option go_package = "streaming.local/servidor-streaming/pb;pb";
+
+service AudioService {
+  // Streaming de audio: el cliente pide un audio por id, el servidor
+  // responde con el mp3 fragmentado en chunks.
+  rpc AudioStream(AudioRequest) returns (stream AudioChunk);
+}
+
+message AudioRequest {
+  int32 audio_id = 1;
+  // titulo y tipo viajan aquí para no obligar al ServidorDeStreaming a
+  // consultarle al servidor de metadatos solo para armar el mensaje que
+  // se publica en la cola de estadísticas; el Cliente ya los tiene a mano
+  // porque los mostró en la pantalla de detalle.
+  string titulo = 2;
+  string tipo = 3;
+  // usuario_id identifica al usuario que reproduce (lo genera y guarda el
+  // navegador). El ServidorDeStreaming lo reenvía en el mensaje de la cola
+  // para que el ServidorDeEstadisticas arme el historial por usuario.
+  string usuario_id = 4;
+}
+
+message AudioChunk {
+  bytes data = 1;
+}

@@ -1,0 +1,165 @@
+{
+  "tipos": [
+    {
+      "id": 1,
+      "nombre": "Música"
+    },
+    {
+      "id": 2,
+      "nombre": "Podcasts"
+    },
+    {
+      "id": 3,
+      "nombre": "Audiolibros"
+    },
+    {
+      "id": 4,
+      "nombre": "Ruido Blanco"
+    }
+  ],
+  "audios": [
+    {
+      "id": 1,
+      "tipoId": 1,
+      "titulo": "Bohemian Rhapsody",
+      "metadatos": {
+        "Artista Principal": "Queen",
+        "Año de Lanzamiento": "1975",
+        "Género Musical": "Rock",
+        "Sello Discográfico": "EMI",
+        "Álbum": "A Night at the Opera"
+      },
+      "nombreMp3": "1.mp3"
+    },
+    {
+      "id": 2,
+      "tipoId": 1,
+      "titulo": "Blinding Lights",
+      "metadatos": {
+        "Artista Principal": "The Weeknd",
+        "Año de Lanzamiento": "2019",
+        "Género Musical": "Pop",
+        "Sello Discográfico": "XO / Republic Records",
+        "Álbum": "After Hours"
+      },
+      "nombreMp3": "2.mp3"
+    },
+    {
+      "id": 3,
+      "tipoId": 2,
+      "titulo": "Episodio 1: Introducción a la Computación Distribuida",
+      "metadatos": {
+        "Anfitrión": "Laura Muñoz",
+        "Clasificación de Contenido": "Para toda la familia",
+        "Nombre del Podcast": "Sistemas al Aire",
+        "Notas del Show": "Conceptos básicos de sistemas distribuidos y RPC.",
+        "Número de Temporada/Episodio": "T1E1",
+        "Título del Episodio": "Introducción a la Computación Distribuida"
+      },
+      "nombreMp3": "3.mp3"
+    },
+    {
+      "id": 4,
+      "tipoId": 2,
+      "titulo": "Episodio 2: gRPC vs REST",
+      "metadatos": {
+        "Anfitrión": "Laura Muñoz",
+        "Clasificación de Contenido": "Para toda la familia",
+        "Nombre del Podcast": "Sistemas al Aire",
+        "Notas del Show": "Comparación práctica entre gRPC y REST.",
+        "Número de Temporada/Episodio": "T1E2",
+        "Título del Episodio": "gRPC vs REST"
+      },
+      "nombreMp3": "4.mp3"
+    },
+    {
+      "id": 5,
+      "tipoId": 3,
+      "titulo": "Cien años de soledad",
+      "metadatos": {
+        "Autor": "Gabriel García Márquez",
+        "Capítulo": "1",
+        "Editorial": "Penguin Random House Grupo Editorial",
+        "ISBN": "978-0307474728",
+        "Narrador": "Gustavo Bonfigli",
+        "Título del Libro": "Cien años de soledad"
+      },
+      "nombreMp3": "5.mp3"
+    },
+    {
+      "id": 6,
+      "tipoId": 3,
+      "titulo": "Harry Potter y la Piedra Filosofal",
+      "metadatos": {
+        "Autor": "J. K. Rowling",
+        "Capítulo": "1",
+        "Editorial": "Salamandra",
+        "ISBN": "978-8478884452",
+        "Narrador": "Miguel Ángel Ghigliazza",
+        "Título del Libro": "Harry Potter y la Piedra Filosofal"
+      },
+      "nombreMp3": "6.mp3"
+    },
+    {
+      "id": 7,
+      "tipoId": 4,
+      "titulo": "Lluvia Suave",
+      "metadatos": {
+        "Duración del Bucle": "10:00",
+        "Frecuencia Dominante": "Graves",
+        "Fuente del Audio": "Lluvia",
+        "Proveedor de Contenido": "SoundScapes",
+        "Tipo de Sonido": "Ruido Blanco",
+        "Uso Sugerido": "Dormir"
+      },
+      "nombreMp3": "7.mp3"
+    },
+    {
+      "id": 8,
+      "tipoId": 4,
+      "titulo": "Ventilador Constante",
+      "metadatos": {
+        "Duración del Bucle": "15:00",
+        "Frecuencia Dominante": "Graves",
+        "Fuente del Audio": "Ventilador",
+        "Proveedor de Contenido": "SoundScapes",
+        "Tipo de Sonido": "Ruido Marrón",
+        "Uso Sugerido": "Concentración"
+      },
+      "nombreMp3": "8.mp3"
+    },
+    {
+      "id": 9,
+      "tipoId": 1,
+      "titulo": "PerreitoSabroso",
+      "metadatos": {
+        "Artista Principal": "Ñejo",
+        "Año de Lanzamiento": "2006",
+        "Sello Discográfico": "LatinasVIP",
+        "Álbum": "DagaAdicta Creo"
+      },
+      "nombreMp3": "9.mp3"
+    },
+    {
+      "id": 10,
+      "tipoId": 1,
+      "titulo": "Joseador",
+      "metadatos": {
+        "Año": "2007"
+      },
+      "nombreMp3": "10.mp3"
+    },
+    {
+      "id": 11,
+      "tipoId": 1,
+      "titulo": "holaRabbit",
+      "metadatos": {
+        "hola": "puto",
+        "jasjas": "kaskdjaskjd",
+        "perro": "mrk"
+      },
+      "nombreMp3": "11.mp3"
+    }
+  ],
+  "siguienteId": 12
+}

@@ -1,0 +1,21 @@
+{
+  "name": "cliente-web",
+  "version": "2.0.0",
+  "description": "Cliente web del sistema de audio (segundo corte)",
+  "main": "cliente_receptor_fragmentos.js",
+  "scripts": {
+    "stubs": "bash generar_stubs.sh",
+    "build": "webpack"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "google-protobuf": "^4.0.1",
+    "grpc-web": "^2.0.2"
+  },
+  "devDependencies": {
+    "grpc-tools": "^1.13.1",
+    "protoc-gen-grpc-web": "^1.5.0",
+    "webpack": "^5.103.0",
+    "webpack-cli": "^6.0.1"
+  }
+}
