@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Administrador de audios</title>
+<style>
+:root{color-scheme:light dark;--b:rgba(128,128,128,.45)}
+body{font:16px system-ui,sans-serif;max-width:46rem;margin:1.5rem auto;padding:0 1rem}
+label{display:block;margin:.6rem 0 .2rem;font-weight:600}input,select,button{font:inherit;padding:.4rem .5rem;border:1px solid var(--b);border-radius:6px;background:transparent;color:inherit;width:100%}
+button{width:auto;cursor:pointer;margin-top:.8rem}button:disabled{opacity:.5}fieldset{border:1px solid var(--b);border-radius:8px;margin:.8rem 0}
+small{opacity:.75}.aviso{border:2px solid #d97706;border-radius:8px;padding:.6rem .8rem;margin:.6rem 0}.ok{color:#1a7f37}.mal{color:#c62828}
+#log{list-style:none;padding:.5rem;border:1px solid var(--b);border-radius:6px;max-height:13rem;overflow:auto;font:.85rem ui-monospace,monospace}
+</style></head><body>
+<h1>Administrador de audios</h1>
+<label for="api">URL del gateway</label><input id="api" value="http://localhost:9000/api">
+<form id="f">
+  <label for="tipo">Tipo de audio</label><select id="tipo"></select>
+  <label for="titulo">Título *</label><input id="titulo" required maxlength="200">
+  <fieldset><legend>Metadatos del tipo (* obligatorios)</legend><div id="campos"></div></fieldset>
+  <label for="mp3">Archivo mp3 * (máx. 200 MB)</label><input id="mp3" type="file" accept=".mp3,audio/mpeg" required>
+  <button id="enviar">Registrar audio</button>
+</form>
+<div id="pendientes"></div>
+<h3>Registro de pasos</h3><ul id="log"></ul>
+<script>
+const $ = s => document.querySelector(s), api = () => $("#api").value.replace(/\/+$/, "");
+let pend = [];
+try { pend = JSON.parse(localStorage.getItem("admin_pendientes") || "[]"); } catch (e) {}
+const guardar = () => { try { localStorage.setItem("admin_pendientes", JSON.stringify(pend)); } catch (e) {} };
+function eco(t, c) { const li = document.createElement("li"); li.textContent = "[" + new Date().toLocaleTimeString("es-CO") + "] " + t; if (c) li.className = c; $("#log").appendChild(li); li.scrollIntoView({ block: "nearest" }); }
+async function resp(r) { let d = null; try { d = await r.json(); } catch (e) {} if (!r.ok) { const e = new Error((d && d.mensaje) || "HTTP " + r.status); e.faltantes = (d && d.faltantes) || []; throw e; } return d; }
+const get = ruta => fetch(api() + ruta).then(resp);
+
+async function cargarTipos() {
+  try { const t = await get("/tipos"); $("#tipo").replaceChildren(...t.map(x => new Option(x.nombre, x.id))); await cargarCampos(); }
+  catch (e) { eco("No se pudieron cargar los tipos: " + e.message + " (¿gateway en " + api() + "?)", "mal"); }
+}
+async function cargarCampos() {
+  const c = await get("/tipos/" + $("#tipo").value + "/campos"), cont = $("#campos"); cont.textContent = "";
+  c.campos.forEach((k, i) => {
+    const l = document.createElement("label"), inp = document.createElement("input"); l.textContent = k.clave + (k.obligatorio ? " *" : " (opcional)");
+    inp.dataset.clave = k.clave; inp.required = k.obligatorio; inp.maxLength = 500;
+    if (k.sugerencias) { const dl = document.createElement("datalist"); dl.id = "dl" + i; k.sugerencias.forEach(s => dl.appendChild(new Option(s))); inp.setAttribute("list", dl.id); cont.appendChild(dl); }
+    cont.appendChild(l); cont.appendChild(inp);
+  });
+}
+async function subir(id, archivo) {
+  if (!/\.mp3$/i.test(archivo.name)) throw new Error("el archivo debe ser .mp3");
+  eco("Subiendo el mp3 del audio " + id + " (" + (archivo.size / 1048576).toFixed(1) + " MB)...");
+  const fd = new FormData(); fd.append("archivo", archivo);
+  const d = await fetch(api() + "/audios/" + id + "/archivo", { method: "POST", body: fd }).then(resp);
+  eco("Audio " + id + " completo: archivo guardado como " + d.nombreMp3, "ok");
+}
+function pintarPendientes() {
+  const cont = $("#pendientes"); cont.textContent = "";
+  pend.forEach(p => {
+    const d = document.createElement("div"), f = document.createElement("input"), b = document.createElement("button"); d.className = "aviso";
+    d.append("⚠ El audio " + p.id + " (" + p.titulo + ") está REGISTRADO EN EL CATÁLOGO PERO SIN ARCHIVO: no se podrá reproducir hasta subir su mp3. ");
+    f.type = "file"; f.accept = ".mp3,audio/mpeg"; b.textContent = "Subir archivo pendiente";
+    b.onclick = async () => { if (!f.files[0]) return eco("Elige primero el mp3 del audio " + p.id, "mal");
+      try { await subir(p.id, f.files[0]); pend = pend.filter(x => x.id !== p.id); guardar(); pintarPendientes(); } catch (e) { eco("Falló la subida del audio " + p.id + ": " + e.message, "mal"); } };
+    d.append(f, b); cont.appendChild(d);
+  });
+}
+$("#f").onsubmit = async ev => {
+  ev.preventDefault(); const btn = $("#enviar"); btn.disabled = true;
+  const metadatos = {}; document.querySelectorAll("#campos input").forEach(i => { if (i.value.trim()) metadatos[i.dataset.clave] = i.value.trim(); });
+  const titulo = $("#titulo").value.trim(), archivo = $("#mp3").files[0]; let id = null;
+  try {
+    if (!/\.mp3$/i.test(archivo.name)) throw new Error("el archivo debe ser .mp3");
+    eco("Registrando metadatos de \"" + titulo + "\"...");
+    id = (await fetch(api() + "/audios", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ tipoId: +$("#tipo").value, titulo, metadatos }) }).then(resp)).id;
+    eco("Metadatos registrados: id=" + id, "ok");
+    await subir(id, archivo); $("#f").reset(); await cargarCampos();
+  } catch (e) {
+    if (id === null) eco("No se registró el audio: " + e.message + (e.faltantes.length ? " → faltan: " + e.faltantes.join(", ") : ""), "mal");
+    else { eco("El audio " + id + " quedó REGISTRADO SIN ARCHIVO: " + e.message, "mal"); pend.push({ id, titulo }); guardar(); pintarPendientes(); }
+  } finally { btn.disabled = false; }
+};
+$("#tipo").onchange = () => cargarCampos().catch(e => eco(e.message, "mal"));
+$("#api").onchange = cargarTipos;
+pintarPendientes(); cargarTipos();
+</script></body></html>
