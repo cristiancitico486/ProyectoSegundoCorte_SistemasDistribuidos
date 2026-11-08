@@ -3,6 +3,13 @@ docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 -e RABBITMQ_DEFAULT_US
 
 docker start (id del anterior(abajo puse uno ya creado en mi pc))
 
+docker start consul
+
+# INicia el envoy
+
+ ./envoyServer -c envoyConfig2.yaml --disable-hot-restart
+
+
 
 cd ProyectoPrimerCorte/ServidorMetadataDeAudios && go mod tidy && go run .
 
